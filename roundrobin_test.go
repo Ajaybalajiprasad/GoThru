@@ -50,3 +50,30 @@ func TestRoundRobinEmpty(t *testing.T) {
 }
 
 var _ Balancer = (*RoundRobin)(nil)
+
+func TestWeightedDistribution(t *testing.T) {
+    servers := []*Server{
+        NewWeightedServer("s1:80", 3),
+        NewWeightedServer("s2:80", 2),
+        NewWeightedServer("s3:80", 1),
+    }
+    lb := NewWeightedRoundRobin(servers)
+
+    counts := map[string]int{}
+    for i := 0; i < 60; i++ {
+        s := lb.Next()
+        counts[s.Address]++
+    }
+
+    if counts["s1:80"] != 30 {
+        t.Errorf("s1 got %d, want 30", counts["s1:80"])
+    }
+    if counts["s2:80"] != 20 {
+        t.Errorf("s2 got %d, want 20", counts["s2:80"])
+    }
+    if counts["s3:80"] != 10 {
+        t.Errorf("s3 got %d, want 10", counts["s3:80"])
+    }
+}
+
+var _ Balancer = (*WeightedRoundRobin)(nil)
