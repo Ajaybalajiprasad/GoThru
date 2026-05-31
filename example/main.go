@@ -9,7 +9,7 @@ import (
   "net/url"
   "strings"
   "time"
-  "github.com/Ajaybalajiprasad/loadbalancer"
+  "github.com/Ajaybalajiprasad/GoThru"
 )
 
 func main(){
