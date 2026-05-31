@@ -15,6 +15,7 @@ import (
 func main(){
   port :=  flag.String("port", "8000", "port to run load balancer on")
   backends := flag.String("backends", "", "coma separated backedn url")
+  algorithm := flag.String("algorithm", "round_robin", "weighted")
   flag.Parse()
 
   if *backends == "" {
@@ -26,7 +27,7 @@ func main(){
     servers = append(servers, loadbalancer.NewServer(strings.TrimSpace(addr)))
   }
 
-  lb := loadbalancer.NewRoundRobin(servers)
+  lb := loadbalancer.New(*algorithm, servers)
 
   go func() {
     for {
